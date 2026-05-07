@@ -1,0 +1,68 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:pageModels="clr-namespace:MauiAppSandbox.PageModels"
+             xmlns:models="clr-namespace:MauiAppSandbox.Models"
+             x:Class="MauiAppSandbox.Pages.MainPage"
+             x:DataType="pageModels:MainPageModel"
+             Title="Weekly Budget">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="16">
+            <Label Text="Weekly budget" FontSize="16" Opacity="0.7"/>
+            <Label Text="{Binding WeeklyBudget, StringFormat='Budget: {0:N0} kr'}" FontSize="28" FontAttributes="Bold"/>
+
+            <Grid ColumnDefinitions="*,*" ColumnSpacing="12">
+                <VerticalStackLayout>
+                    <Label Text="Spent" FontSize="14" Opacity="0.7"/>
+                    <Label Text="{Binding TotalSpent, StringFormat='{0:N0} kr'}" FontSize="22"/>
+                </VerticalStackLayout>
+                <VerticalStackLayout Grid.Column="1">
+                    <Label Text="Remaining" FontSize="14" Opacity="0.7"/>
+                    <Label Text="{Binding RemainingBudget, StringFormat='{0:N0} kr'}" FontSize="22"/>
+                </VerticalStackLayout>
+            </Grid>
+
+            <Label Text="{Binding StatusMessage}" TextColor="DarkRed" FontAttributes="Bold"/>
+
+            <Border StrokeThickness="1" Stroke="LightGray" Padding="12">
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="Register purchase" FontAttributes="Bold" FontSize="18"/>
+                    <Entry Placeholder="Description (e.g. groceries)"
+                           Text="{Binding NewPurchaseDescription}" />
+                    <Entry Placeholder="Amount in kr"
+                           Keyboard="Numeric"
+                           Text="{Binding NewPurchaseAmount}" />
+                    <Button Text="Add purchase" Command="{Binding AddPurchaseCommand}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Label Text="Purchases this week" FontAttributes="Bold" FontSize="18" />
+
+            <CollectionView ItemsSource="{Binding Purchases}">
+                <CollectionView.EmptyView>
+                    <Label Text="No purchases registered yet." Opacity="0.7"/>
+                </CollectionView.EmptyView>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:PurchaseEntry">
+                        <Grid ColumnDefinitions="*,Auto,Auto" Padding="0,8">
+                            <VerticalStackLayout>
+                                <Label Text="{Binding Description}" FontAttributes="Bold"/>
+                                <Label Text="{Binding Date, StringFormat='{0:ddd dd MMM HH:mm}'}" FontSize="12" Opacity="0.7"/>
+                            </VerticalStackLayout>
+                            <Label Grid.Column="1"
+                                   VerticalOptions="Center"
+                                   Margin="12,0"
+                                   Text="{Binding Amount, StringFormat='{0:N0} kr'}" />
+                            <Button Grid.Column="2"
+                                    Text="Remove"
+                                    Padding="8,2"
+                                    Command="{Binding Source={RelativeSource AncestorType={x:Type pageModels:MainPageModel}}, Path=RemovePurchaseCommand}"
+                                    CommandParameter="{Binding .}" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
